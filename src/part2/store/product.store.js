@@ -20,6 +20,14 @@ function getProductById(id) {
   return products.get(id);
 }
 
+function updateProduct(id, updatedProduct) {
+  products.set(id, updatedProduct);
+}
+
+function updateProductMedia(id, media) {
+  productMedia.set(id, media);
+}
+
 function getProductMedia(id) {
   return (
     productMedia.get(id) || {
@@ -52,6 +60,8 @@ function getTotalProducts() {
 module.exports = {
   createProduct,
   getProductById,
+  updateProduct,
+  updateProductMedia,
   getProductMedia,
   getProductBySku,
   getPaginatedProducts,

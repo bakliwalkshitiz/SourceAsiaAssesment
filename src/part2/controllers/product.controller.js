@@ -2,6 +2,7 @@ const {
   createNewProduct,
   getProducts,
   getSingleProduct,
+  addProductMedia,
 } = require('../services/product.service');
 
 function createProduct(req, res) {
@@ -38,8 +39,23 @@ function getProduct(req, res) {
   return res.status(200).json(product);
 }
 
+function appendMedia(req, res) {
+  const { id } = req.params;
+
+  const result = addProductMedia(id, req.body);
+
+  if (result.error) {
+    return res.status(result.status).json({
+      error: result.error,
+    });
+  }
+
+  return res.status(result.status).json(result.data);
+}
+
 module.exports = {
   createProduct,
   getAllProducts,
   getProduct,
+  appendMedia,
 };

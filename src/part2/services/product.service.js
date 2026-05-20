@@ -7,6 +7,8 @@ const {
   getProductById,
   getProductMedia,
   getTotalProducts,
+  updateProduct,
+  updateProductMedia,
 } = require('../store/product.store');
 
 function validateUrls(urls = []) {
@@ -156,8 +158,87 @@ function getSingleProduct(id) {
   };
 }
 
+function addProductMedia(id, data) {
+  const product = getProductById(id);
+
+  if (!product) {
+    return {
+      error: 'Product not found',
+      status: 404,
+    };
+  }
+
+  const {
+    image_urls = [],
+    video_urls = [],
+  } = data;
+
+  if (
+    !Array.isArray(image_urls) ||
+    !Array.isArray(video_urls)
+  ) {
+    return {
+      error: 'Media fields must be arrays',
+      status: 400,
+    };
+  }
+
+  if (
+    image_urls.length === 0 &&
+    video_urls.length === 0
+  ) {
+    return {
+      error: 'At least one media array is required',
+      status: 400,
+    };
+  }
+
+  if (
+    !validateUrls(image_urls) ||
+    !validateUrls(video_urls)
+  ) {
+    return {
+      error: 'Invalid URLs provided',
+      status: 400,
+    };
+  }
+
+  const existingMedia = getProductMedia(id);
+
+  existingMedia.image_urls.push(...image_urls);
+
+  existingMedia.video_urls.push(...video_urls);
+
+  updateProductMedia(id, existingMedia);
+
+  product.image_count =
+    existingMedia.image_urls.length;
+
+  product.video_count =
+    existingMedia.video_urls.length;
+
+  if (
+    !product.thumbnail_url &&
+    existingMedia.image_urls.length > 0
+  ) {
+    product.thumbnail_url =
+      existingMedia.image_urls[0];
+  }
+
+  updateProduct(id, product);
+
+  return {
+    status: 200,
+    data: {
+      ...product,
+      ...existingMedia,
+    },
+  };
+}
+
 module.exports = {
   createNewProduct,
   getProducts,
   getSingleProduct,
+  addProductMedia,
 };
