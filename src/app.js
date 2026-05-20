@@ -5,6 +5,8 @@ const morgan = require('morgan');
 
 const requestRoutes = require('./part1/routes/request.routes');
 
+const productRoutes = require('./part2/routes/product.routes');
+
 const {
   errorHandler,
   notFoundHandler,
@@ -28,6 +30,8 @@ function buildApp() {
   });
 
   app.use('/', requestRoutes);
+
+  app.use('/', productRoutes);
 
   app.use(notFoundHandler);
 
