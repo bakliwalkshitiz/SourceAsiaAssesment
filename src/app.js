@@ -3,6 +3,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
+const requestRoutes = require('./part1/routes/request.routes');
+
 const {
   errorHandler,
   notFoundHandler,
@@ -12,7 +14,9 @@ function buildApp() {
   const app = express();
 
   app.use(helmet());
+
   app.use(cors());
+
   app.use(morgan('dev'));
 
   app.use(express.json());
@@ -22,6 +26,8 @@ function buildApp() {
       message: 'API running',
     });
   });
+
+  app.use('/', requestRoutes);
 
   app.use(notFoundHandler);
 
